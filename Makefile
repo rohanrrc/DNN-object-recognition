@@ -130,6 +130,9 @@ TEST_CXX_BINS := $(addsuffix .testbin,$(addprefix $(TEST_BIN_DIR)/, \
 TEST_BINS := $(TEST_CXX_BINS) $(TEST_CU_BINS)
 TEST_ALL_BIN := $(TEST_BIN_DIR)/test_all.testbin
 
+TEST_RELU_BINS := $(BUILD_DIR)/src/caffe/layers/relu_layer.o $(BUILD_DIR)/src/caffe/test/test_relu_layer.o
+TEST_RELU_BIN := $(TEST_BIN_DIR)/test_relu.testbin
+
 ##############################
 # Derive compiler warning dump locations
 ##############################
@@ -310,6 +313,7 @@ LIBRARY_DIRS += $(BLAS_LIB)
 
 # Complete build flags.
 COMMON_FLAGS += $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir))
+COMMON_FLAGS += -fopenmp
 CXXFLAGS += -pthread -fPIC $(COMMON_FLAGS) $(WARNINGS)
 NVCCFLAGS += -ccbin=$(CXX) -Xcompiler -fPIC $(COMMON_FLAGS)
 # mex may invoke an older gcc that is too liberal with -Wuninitalized
@@ -377,6 +381,7 @@ $(LINT_OUTPUTS): $(LINT_OUTPUT_DIR)/%.lint.txt : % $(LINT_SCRIPT) | $(LINT_OUTPU
 		|| true
 
 test: $(TEST_ALL_BIN) $(TEST_BINS)
+relutest: $(TEST_RELU_BIN) $(TEST_RELU_BINS)
 
 tools: $(TOOL_BINS) $(TOOL_BIN_LINKS)
 
