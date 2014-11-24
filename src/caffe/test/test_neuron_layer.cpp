@@ -1,5 +1,7 @@
 #include <cstring>
 #include <vector>
+#include <sys/time.h>
+#include <time.h>
 
 #include "gtest/gtest.h"
 
@@ -10,6 +12,13 @@
 
 #include "caffe/test/test_caffe_main.hpp"
 #include "caffe/test/test_gradient_check_util.hpp"
+
+double timestamp()
+{
+  struct timeval tv;
+  gettimeofday (&tv, 0);
+  return tv.tv_sec + 1e-6*tv.tv_usec;
+}
 
 namespace caffe {
 
@@ -98,7 +107,10 @@ TYPED_TEST(NeuronLayerTest, TestReLU) {
   LayerParameter layer_param;
   ReLULayer<Dtype> layer(layer_param);
   layer.SetUp(this->blob_bottom_vec_, &(this->blob_top_vec_));
+  double t0 = timestamp();
   layer.Forward(this->blob_bottom_vec_, &(this->blob_top_vec_));
+  t0 = timestamp()-t0;
+  printf("timing RELU ----------------------------------------------: %g seconds\n", t0);
   // Now, check values
   const Dtype* bottom_data = this->blob_bottom_->cpu_data();
   const Dtype* top_data = this->blob_top_->cpu_data();
