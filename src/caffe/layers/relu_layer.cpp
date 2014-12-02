@@ -44,7 +44,7 @@ void ReLULayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const int count = bottom[0]->count();
   const Dtype negative_slope = this->layer_param_.relu_param().negative_slope();
 
-  //uncomment for pThread
+  //uncomment for pThreads
   // pthread_t *thr = new pthread_t[NTHR];
   // worker_t<Dtype> *tInfo = new worker_t<Dtype>[NTHR];
   //  long id;
