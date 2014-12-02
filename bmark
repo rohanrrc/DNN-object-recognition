@@ -1,0 +1,6 @@
+make -j 32
+make -j 32 test
+./.build_release/test/test_neuron_layer.testbin > temp_relu.txt
+cat temp_relu.txt | grep timing
+cat temp_relu.txt | grep benchmarking
+rm temp_relu.txt
