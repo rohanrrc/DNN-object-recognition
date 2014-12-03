@@ -6,7 +6,7 @@
 #include <pthread.h>
 // #include "zmmintrin.h"
 
-#define NTHR 4
+#define NTHR 16
 
 namespace caffe {
 
@@ -30,6 +30,7 @@ void *relu_worker(void *arg)
 
   for(int i = t->start; i < t->end; i++)
   {
+
     top_data[i] = std::max(bottom_data[i], Dtype(0))
         + t->negative_slope * std::min(bottom_data[i], Dtype(0));
   }
@@ -67,7 +68,7 @@ void ReLULayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
 
 
   // const int chunk_size =count/omp_get_num_threads()
-  omp_set_dynamic(0);
+  // omp_set_dynamic(0);
   omp_set_num_threads(NTHR);
   #pragma omp parallel for 
   for (int i = 0; i < count; i++) {
