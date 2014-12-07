@@ -70,33 +70,6 @@ int relu_speed_test(int num, int channels_in, int height_in, int width_in, strin
     return 0; //TODO: return 1 if error?
 }
 
-//mimic alexnet dims, print out perf results.
-// void alexnet_speed_test()
-// {
-//     int NUM_ = 50;
-    
-//     // alexnet conv1
-//     relu_speed_test<float>(NUM_, 3, 227, 227,  "alexnet conv1");
-
-//     //pool1: stride=2
-
-//     relu_speed_test<float>(NUM_, 96, 27, 27, "alexnet conv2");
-
-//     //pool2: stride=2
-
-//     relu_speed_test<float>(NUM_, 256, 13, 13, "alexnet conv3"); //slightly faster than in net_speed_test_forrest (15ms vs 20ms, in GPU mode)
-
-//     //there is no pool3
-
-//     relu_speed_test<float>(NUM_, 384, 13, 13, "alexnet conv4");
-//     //there is no pool4
-
-//     relu_speed_test<float>(NUM_, 384, 13, 13, "alexnet conv5");
-
-//     //TODO: sweep the space of kernelSize, stride, channels, num_output, etc.
-
-//     LOG(ERROR) << "*** Benchmark ends ***";
-// }
 
 // for the configuration below, bigger planes seem to give more gflops/s.
 // inputDim=8 and inputDim=16 both take ~20ms.

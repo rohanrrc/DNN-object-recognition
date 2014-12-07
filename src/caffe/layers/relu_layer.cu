@@ -10,10 +10,7 @@ template <typename Dtype>
 __global__ void ReLUForward(const int n, const Dtype* in, Dtype* out,
     Dtype negative_slope) {
   CUDA_KERNEL_LOOP(index, n) {
-    // out[index] = in[index] > 0 ? in[index] : in[index] * negative_slope;
-        out[index] = fmax(in[index], Dtype(0))
-        + negative_slope * fmin(in[index], Dtype(0));
-        
+     out[index] = in[index] > 0 ? in[index] : in[index] * negative_slope;
   }
 }
 
