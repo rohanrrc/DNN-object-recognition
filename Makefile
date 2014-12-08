@@ -314,8 +314,8 @@ LIBRARY_DIRS += $(BLAS_LIB)
 # Complete build flags.
 COMMON_FLAGS += $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir))
 COMMON_FLAGS += -fopenmp
-COMMON_FLAGS += -msse4.2
-COMMON_FLAGS += -mavx
+# COMMON_FLAGS += -msse4.2
+# COMMON_FLAGS += -mavx
 # COMMON_FLAGS += -fpermissive
 # COMMON_FLAGS += -pthread
 # COMMON_FLAGS += -ftree-parallelize-loops=32

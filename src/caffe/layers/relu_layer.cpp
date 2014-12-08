@@ -4,7 +4,7 @@
 #include "caffe/layer.hpp"
 #include "caffe/vision_layers.hpp"
 #include <pthread.h>
-#include <immintrin.h>
+#include <xmmintrin.h>
 
 #define NTHR 16
 
@@ -78,16 +78,21 @@ void ReLULayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   // for(id=0; id<NTHR ; ++id){
   //   pthread_join(thr[id],&status);
   // }
-  // delete [] thr;
+  // delete [] thr; 
   // delete [] tInfo;
 
   if (sizeof(negative_slope) == 4){
       omp_set_num_threads(NTHR);
-      #pragma omp parallel for  
-      for (int i = 0; i < count; i+=8) {
-      __m256 bottom = _mm256_load_ps((const float *) bottom_data+i);
-      __m256 zero = _mm256_setzero_ps();
-      _mm256_store_ps((float *)top_data+i, _mm256_add_ps(_mm256_max_ps( bottom,zero), _mm256_mul_ps(_mm256_set1_ps(negative_slope), _mm256_min_ps (bottom, zero))));
+      double chunksize = count/omp_get_num_threads();
+      #pragma omp parallel for schedule(dynamic, chunksize)
+      for (int i = 0; i < count; i+=16) {
+        __m128 bottom = _mm_load_ps((const float *) bottom_data+i);
+        __m128 zero = _mm_setzero_ps();
+        _mm_store_ps((float *)top_data+i, _mm_add_ps(_mm_max_ps( bottom,zero), _mm_mul_ps(_mm_set1_ps(negative_slope), _mm_min_ps (bottom, zero))));
+
+      // __m256 bottom = _mm256_load_ps((const float *) bottom_data+i);
+      // __m256 zero = _mm256_setzero_ps();
+      // _mm256_store_ps((float *)top_data+i, _mm256_add_ps(_mm256_max_ps( bottom,zero), _mm256_mul_ps(_mm256_set1_ps(negative_slope), _mm256_min_ps (bottom, zero))));
       // top_data[i] = std::max(bottom_data[i], Dtype(0)) + negative_slope * std::min(bottom_data[i], Dtype(0));
     }
   }else{
@@ -97,7 +102,7 @@ void ReLULayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       // __m128 bottom = _mm_load_ps(bottom_data+i);
       // __m128 zero = _mm_setzero_ps();
       // _mm_store_ps(top_data+i, _mm_add_ps(_mm_max_ps(bottom,zero), _mm_mul_ps(_mm_set1_ps(negative_slope), _mm_min_ps (bottom, zero))));
-      top_data[i] = std::max(bottom_data[i], Dtype(0)) + negative_slope * std::min(bottom_data[i], Dtype(0));
+      // top_data[i] = std::max(bottom_data[i], Dtype(0)) + negative_slope * std::min(bottom_data[i], Dtype(0));
     }
   }
 
